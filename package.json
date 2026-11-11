@@ -1,0 +1,30 @@
+{
+  "name": "assign3_webdeviii",
+  "version": "1.0.0",
+  "description": "Inventory and Data Management System REST API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Acad-recs/Assign3_webdevIII.git"
+  },
+  "keywords": [
+    "inventory",
+    "express",
+    "mongoose",
+    "rest-api"
+  ],
+  "author": "Anveshna",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "mongoose": "^9.12.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
