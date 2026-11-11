@@ -1,0 +1,383 @@
+{
+  "info": {
+    "_postman_id": "a5e977c8-7c80-4cf9-b8de-8cbefc861201",
+    "name": "Inventory API - Assign3_webdevIII",
+    "description": "Comprehensive Postman collection covering all eight API operations and edge cases for Assignment 3 - Web Dev III.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "productId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Create Product (Valid)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Logitech MX Master 3S\",\n  \"sku\": \"LOGI-MX3S-001\",\n  \"category\": \"Electronics\",\n  \"price\": 99.99,\n  \"quantity\": 25,\n  \"reorderLevel\": 5,\n  \"supplier\": \"Logitech Inc.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"]
+        }
+      }
+    },
+    {
+      "name": "2. Create Product - Missing Required Fields",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Incomplete Item\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"]
+        }
+      }
+    },
+    {
+      "name": "3. Create Product - Duplicate SKU Error",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Duplicate Logitech Mouse\",\n  \"sku\": \"LOGI-MX3S-001\",\n  \"category\": \"Electronics\",\n  \"price\": 89.99,\n  \"quantity\": 10,\n  \"reorderLevel\": 2,\n  \"supplier\": \"Logitech Inc.\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"]
+        }
+      }
+    },
+    {
+      "name": "4. Get All Products (Default)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"]
+        }
+      }
+    },
+    {
+      "name": "5. Get All Products - Category Filter",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products?category=Electronics",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "category",
+              "value": "Electronics"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "6. Get All Products - Supplier Filter",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products?supplier=Logitech Inc.",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "supplier",
+              "value": "Logitech Inc."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "7. Get All Products - Search by Name",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products?search=Master",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "search",
+              "value": "Master"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "8. Get All Products - Price Range Filter",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products?minPrice=50&maxPrice=150",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "minPrice",
+              "value": "50"
+            },
+            {
+              "key": "maxPrice",
+              "value": "150"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "9. Get All Products - Sorting Ascending",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products?sortBy=price&order=asc",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "price"
+            },
+            {
+              "key": "order",
+              "value": "asc"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "10. Get All Products - Sorting Descending",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products?sortBy=quantity&order=desc",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "sortBy",
+              "value": "quantity"
+            },
+            {
+              "key": "order",
+              "value": "desc"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "11. Get All Products - Pagination",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products?page=1&limit=5",
+          "host": ["{{baseUrl}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "12. Get Single Product by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "{{productId}}"]
+        }
+      }
+    },
+    {
+      "name": "13. Get Single Product - Invalid ObjectId Format",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products/invalid-id-format",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "invalid-id-format"]
+        }
+      }
+    },
+    {
+      "name": "14. Update Product (PUT)",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"price\": 109.99,\n  \"reorderLevel\": 8\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "{{productId}}"]
+        }
+      }
+    },
+    {
+      "name": "15. Stock Adjustment - Increment Stock",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"change\": 15\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products/{{productId}}/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "{{productId}}", "stock"]
+        }
+      }
+    },
+    {
+      "name": "16. Stock Adjustment - Decrement Stock",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"change\": -5\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products/{{productId}}/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "{{productId}}", "stock"]
+        }
+      }
+    },
+    {
+      "name": "17. Stock Adjustment - Reject Negative Stock",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"change\": -9999\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/products/{{productId}}/stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "{{productId}}", "stock"]
+        }
+      }
+    },
+    {
+      "name": "18. Low-Stock Alert Report",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products/low-stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "low-stock"]
+        }
+      }
+    },
+    {
+      "name": "19. Category-wise Summary Aggregation",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products/summary",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "summary"]
+        }
+      }
+    },
+    {
+      "name": "20. Delete Product",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products/{{productId}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "{{productId}}"]
+        }
+      }
+    }
+  ]
+}
