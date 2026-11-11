@@ -30,7 +30,66 @@ const createProduct = async (req, res, next) => {
 // @route   GET /api/products
 const getAllProducts = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: 'getAllProducts endpoint initialized' });
+    const { category, supplier, search, minPrice, maxPrice, sortBy, order, page, limit } = req.query;
+
+    // Build filter query object
+    const filter = {};
+
+    // 1. Category filtering (exact match, case-insensitive)
+    if (category) {
+      filter.category = { $regex: new RegExp(`^${category.trim()}$`, 'i') };
+    }
+
+    // 2. Supplier filtering (exact match, case-insensitive)
+    if (supplier) {
+      filter.supplier = { $regex: new RegExp(`^${supplier.trim()}$`, 'i') };
+    }
+
+    // 3. Name search (case-insensitive substring match)
+    if (search) {
+      filter.name = { $regex: search.trim(), $options: 'i' };
+    }
+
+    // 4. Price range filtering
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      filter.price = {};
+      if (minPrice !== undefined && !isNaN(Number(minPrice))) {
+        filter.price.$gte = Number(minPrice);
+      }
+      if (maxPrice !== undefined && !isNaN(Number(maxPrice))) {
+        filter.price.$lte = Number(maxPrice);
+      }
+    }
+
+    // 5. Sorting configuration
+    const allowedSortFields = ['name', 'price', 'quantity', 'createdAt'];
+    const sortField = allowedSortFields.includes(sortBy) ? sortBy : 'createdAt';
+    const sortOrder = order && order.toLowerCase() === 'asc' ? 1 : -1;
+    const sortOption = { [sortField]: sortOrder };
+
+    // 6. Pagination configuration
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const limitNum = Math.max(1, parseInt(limit, 10) || 10);
+    const skip = (pageNum - 1) * limitNum;
+
+    // Execute queries
+    const total = await Product.countDocuments(filter);
+    const products = await Product.find(filter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limitNum);
+
+    const totalPages = Math.ceil(total / limitNum) || 1;
+
+    res.status(200).json({
+      success: true,
+      total,
+      page: pageNum,
+      limit: limitNum,
+      totalPages,
+      count: products.length,
+      products,
+    });
   } catch (error) {
     next(error);
   }
