@@ -21,26 +21,42 @@ Assign3_webdevIII/
 ├── config/
 │   └── db.js                              # MongoDB connection configuration
 │
-├── models/
-│   └── Product.js                         # Mongoose schema, validation & virtual stockValue
-│
 ├── controllers/
 │   └── productController.js               # API controllers for 8 business operations
+│
+├── data/
+│   └── sampleProducts.js                  # Realistic 12-item catalog across 4 categories
+│
+├── middleware/
+│   ├── errorHandler.js                    # Centralized error and 404 handlers
+│   ├── requestLogger.js                   # Lightweight HTTP request logger
+│   ├── validateObjectId.js                # Pre-emptive MongoDB ObjectId validator
+│   ├── validateProduct.js                 # Request payload validation middleware
+│   └── validateStock.js                   # Stock adjustment payload validation
+│
+├── models/
+│   └── Product.js                         # Mongoose schema, validation, virtual & indexes
+│
+├── postman/
+│   └── inventory-api.postman_collection.json # Complete Postman API test collection
 │
 ├── routes/
 │   └── productRoutes.js                   # Express route definitions
 │
-├── middleware/
-│   ├── errorHandler.js                    # Centralized error and 404 handlers
-│   └── validateProduct.js                 # Request payload validation middleware
+├── tests/
+│   ├── api.test.js                        # Zero-dependency end-to-end integration tests
+│   └── testHelper.js                      # Native Node.js HTTP request runner
 │
-├── postman/
-│   └── inventory-api.postman_collection.json # Complete Postman API test collection
+├── utils/
+│   ├── pagination.js                      # Safe pagination bounds and sorting normalization
+│   ├── queryFilter.js                     # ReDoS-safe query builder with regex escaping
+│   └── responseHelper.js                  # Standardized JSON response formatting
 │
 ├── .env.example                           # Sample environment configuration
 ├── .gitignore                             # Git ignore rules
 ├── index.js                               # Server entry point
 ├── package.json                           # Dependencies and scripts
+├── seeder.js                              # Database population and destruction CLI
 ├── DEVELOPMENT_LOG.md                     # Incremental development tracking log
 └── README.md                              # Comprehensive project documentation
 ```
