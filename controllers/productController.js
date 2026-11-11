@@ -170,7 +170,24 @@ const updateProduct = async (req, res, next) => {
 // @route   DELETE /api/products/:id
 const deleteProduct = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: 'deleteProduct endpoint initialized' });
+    const product = await Product.findByIdAndDelete(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: `Product not found with id: ${req.params.id}`,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Product deleted successfully',
+      deletedProduct: {
+        id: product._id,
+        name: product.name,
+        sku: product.sku,
+      },
+    });
   } catch (error) {
     next(error);
   }
