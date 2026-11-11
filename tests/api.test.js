@@ -134,6 +134,22 @@ async function runTests() {
     assert.strictEqual(stockNegRes.status, 400, 'Over-decrement must be rejected with 400');
     console.log('✓ Negative stock prevention passed');
 
+    // Test 12b: Stock adjustment rejecting zero change
+    const stockZeroRes = await request(`/api/products/${id}/stock`, {
+      method: 'PATCH',
+      body: { change: 0 },
+    });
+    assert.strictEqual(stockZeroRes.status, 400, 'Zero stock change must be rejected with 400');
+    console.log('✓ Zero stock change rejection passed');
+
+    // Test 12c: Stock adjustment rejecting missing change field
+    const stockMissingRes = await request(`/api/products/${id}/stock`, {
+      method: 'PATCH',
+      body: {},
+    });
+    assert.strictEqual(stockMissingRes.status, 400, 'Missing change field must be rejected with 400');
+    console.log('✓ Missing stock change validation passed');
+
     // Test 13: Low-stock report
     const lowStockRes = await request('/api/products/low-stock');
     assert.strictEqual(lowStockRes.status, 200);
