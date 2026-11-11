@@ -121,7 +121,46 @@ const getProductById = async (req, res, next) => {
 // @route   PUT /api/products/:id
 const updateProduct = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: 'updateProduct endpoint initialized' });
+    const { name, sku, category, price, quantity, reorderLevel, supplier } = req.body;
+
+    // Reject direct client manipulation of stockValue
+    if (req.body.stockValue !== undefined) {
+      return res.status(400).json({
+        success: false,
+        message: 'Direct assignment of stockValue is not allowed. It is automatically computed.',
+      });
+    }
+
+    const updateFields = {};
+    if (name !== undefined) updateFields.name = name;
+    if (sku !== undefined) updateFields.sku = sku;
+    if (category !== undefined) updateFields.category = category;
+    if (price !== undefined) updateFields.price = price;
+    if (quantity !== undefined) updateFields.quantity = quantity;
+    if (reorderLevel !== undefined) updateFields.reorderLevel = reorderLevel;
+    if (supplier !== undefined) updateFields.supplier = supplier;
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      { $set: updateFields },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: `Product not found with id: ${req.params.id}`,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Product updated successfully',
+      data: product,
+    });
   } catch (error) {
     next(error);
   }
