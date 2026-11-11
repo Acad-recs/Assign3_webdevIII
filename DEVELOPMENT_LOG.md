@@ -60,22 +60,37 @@
   33. `0b17d4f` — `test: implement automated end-to-end integration test suite`
   34. `ce6c2fe` — `chore: bind test script to run automated test suite in package.json`
   35. `3b823bf` — `docs: add testing and seeder commands to README documentation`
-  36. `[pending]` — `docs: record Batch 3 milestones in DEVELOPMENT_LOG`
+  36. `edeca76` — `docs: record Batch 3 milestones in DEVELOPMENT_LOG`
 
-- **Completed Functionality in Batch 3:**
-  - Separated complex query building into `utils/queryFilter.js` with regex sanitation preventing ReDoS attacks.
-  - Implemented pagination and sorting utility `utils/pagination.js` ensuring safe limits and graceful defaults.
-  - Built pre-emptive ObjectId validator middleware `middleware/validateObjectId.js` attached to `/:id` and `/:id/stock` endpoints.
-  - Created realistic 12-item sample catalog `data/sampleProducts.js` spanning Electronics, Furniture, Audio, and Accessories.
-  - Created standalone database seeder script `seeder.js` supporting import and teardown flags.
-  - Added `data:import`, `data:destroy`, and `test` scripts in `package.json`.
-  - Built pure Node.js HTTP test client `tests/testHelper.js` eliminating heavyweight external testing dependencies.
-  - Built complete end-to-end integration test runner `tests/api.test.js` covering all 15 positive, negative, and edge validation tests.
-  - Verified 100% test pass rate with `npm test`.
-  - Updated `README.md` with operational guidance for tests and database seeding.
+---
+
+### Batch 4: Observability, Query Optimization, Response Formatting & Edge Hardening
+
+- **Batch Target:** 10–12 meaningful commits.
+- **Commits Created in Batch 4:** 10 commits.
+- **Commit History for Batch 4:**
+  37. `b72798e` — `feat: add lightweight HTTP request logger middleware`
+  38. `5389178` — `feat: register requestLogger middleware in Express application`
+  39. `1a5d3eb` — `feat: add responseHelper utility for consistent API payloads`
+  40. `e7e0de9` — `perf: add category supplier price and text indexes on Product model`
+  41. `941986e` — `feat: add dedicated validateStockAdjustment middleware`
+  42. `e5d2dc8` — `feat: attach validateStockAdjustment middleware to stock route`
+  43. `49fe6d2` — `refactor: standardize product controller success responses using sendSuccess helper`
+  44. `5c40d42` — `test: add test assertions for zero and missing stock change validation`
+  45. `bd3b64c` — `docs: update architecture tree in README reflecting middleware and utilities`
+  46. `[pending]` — `docs: record Batch 4 milestones in DEVELOPMENT_LOG`
+
+- **Completed Functionality in Batch 4:**
+  - Added HTTP request logging middleware reporting method, path, HTTP status, and response latency.
+  - Built `utils/responseHelper.js` standardizing JSON success and failure envelopes across controllers.
+  - Added query performance indexes to `models/Product.js` covering `category`, `supplier`, `price`, and text index on `name`.
+  - Created dedicated `middleware/validateStock.js` validating payload presence, numeric type, finiteness, and non-zero constraint.
+  - Refactored `productController.js` with `sendSuccess` helper for uniform response envelopes.
+  - Extended automated test suite with edge assertions for zero-change and missing-change stock adjustments.
+  - Updated architectural map in `README.md`.
 
 - **Cumulative Commits:**
-  - Total project commits created so far: 35 commits.
+  - Total project commits created so far: 45 commits.
 
 - **Next Recommended Steps:**
-  - Proceed with Batch 4 upon user instruction toward reaching the 55–60 target commit goal (e.g. enhanced error handling responses, request logging middleware, detailed query response pagination headers, and API edge-case hardening).
+  - Proceed with Batch 5 (10–12 commits) to conclude remaining refinements and reach the 55–60 target commit goal.
