@@ -52,6 +52,12 @@ productSchema.virtual('stockValue').get(function () {
   return Number((this.price * this.quantity).toFixed(2));
 });
 
+// Indexes for query performance optimization
+productSchema.index({ category: 1 });
+productSchema.index({ supplier: 1 });
+productSchema.index({ price: 1 });
+productSchema.index({ name: 'text' });
+
 const Product = mongoose.model('Product', productSchema);
 
 module.exports = Product;
