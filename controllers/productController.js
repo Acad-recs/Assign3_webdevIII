@@ -1,6 +1,7 @@
 const Product = require('../models/Product');
 const { buildProductFilter } = require('../utils/queryFilter');
 const { getPaginationAndSort } = require('../utils/pagination');
+const { sendSuccess } = require('../utils/responseHelper');
 
 // @desc    Create a new product
 // @route   POST /api/products
@@ -18,11 +19,7 @@ const createProduct = async (req, res, next) => {
       supplier,
     });
 
-    res.status(201).json({
-      success: true,
-      message: 'Product created successfully',
-      data: product,
-    });
+    return sendSuccess(res, 201, product, 'Product created successfully');
   } catch (error) {
     next(error);
   }
@@ -70,10 +67,7 @@ const getProductById = async (req, res, next) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      data: product,
-    });
+    return sendSuccess(res, 200, product);
   } catch (error) {
     next(error);
   }
@@ -118,11 +112,7 @@ const updateProduct = async (req, res, next) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      message: 'Product updated successfully',
-      data: product,
-    });
+    return sendSuccess(res, 200, product, 'Product updated successfully');
   } catch (error) {
     next(error);
   }
