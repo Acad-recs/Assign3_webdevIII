@@ -27,7 +27,7 @@
 ### Batch 2: Implementation of All Eight Core API Operations, Postman Suite & Docs
 
 - **Batch Target:** 10 meaningful commits.
-- **Commits Created in Batch 2:** 10 commits.
+- **Commits Created in Batch 2:** 11 commits.
 - **Commit History for Batch 2:**
   13. `6a8105c` — `feat: implement getAllProducts with filtering sorting and pagination`
   14. `e1fc6cb` — `feat: implement getProductById with 404 and CastError handling`
@@ -39,22 +39,43 @@
   20. `c1d134b` — `fix: update mongoose returnDocument option to resolve deprecation warnings`
   21. `ec2a3c6` — `feat: add Postman collection covering all 8 operations and edge cases`
   22. `98295e5` — `docs: expand README with comprehensive documentation for all 8 API operations`
-  23. `[pending]` — `docs: update DEVELOPMENT_LOG for Batch 2 tracking`
+  23. `55898f1` — `docs: update DEVELOPMENT_LOG for Batch 2 tracking`
 
-- **Completed Functionality in Batch 2:**
-  - Implemented `getAllProducts` with category filtering, supplier filtering, name search, min/max price range filtering, multi-field sorting, and pagination metadata.
-  - Implemented `getProductById` with proper 404 resource check and CastError propagation.
-  - Implemented `updateProduct` with schema re-validation, guard against client-specified `stockValue`, and updated document return.
-  - Implemented `deleteProduct` returning confirmation payload with deleted product information.
-  - Implemented atomic `adjustStock` with negative stock guard ensuring quantity does not fall below 0.
-  - Implemented `getLowStockReport` querying `quantity <= reorderLevel` using MongoDB `$expr`.
-  - Implemented `getCategorySummary` with MongoDB aggregation pipeline computing `totalItems`, `totalQuantity`, `totalStockValue`, and `avgPrice`.
-  - Resolved Mongoose deprecation warnings by updating update queries to `returnDocument: 'after'`.
-  - Created complete Postman collection `postman/inventory-api.postman_collection.json` covering 20 test requests.
-  - Updated comprehensive `README.md` with full endpoint specifications and request/response contracts.
+---
+
+### Batch 3: Modular Utilities, Parameter Validation, Seeding Pipeline & Automated Test Suite
+
+- **Batch Target:** 12–13 meaningful commits.
+- **Commits Created in Batch 3:** 13 commits.
+- **Commit History for Batch 3:**
+  24. `a0fdb58` — `feat: add query filter builder utility with regex escaping and price bounds`
+  25. `66dfae6` — `feat: add pagination and sorting utility with safe limits and defaults`
+  26. `e210d14` — `refactor: integrate queryFilter and pagination utilities into productController`
+  27. `5491f9b` — `feat: add validateObjectId middleware for early parameter validation`
+  28. `c5fe742` — `feat: attach validateObjectId middleware to parameterized routes`
+  29. `0b79057` — `feat: add sample product dataset for development seeding and testing`
+  30. `727bc66` — `feat: add database seeder script for population and teardown`
+  31. `9b5c187` — `chore: add data:import and data:destroy npm scripts for seeder`
+  32. `d52e789` — `test: add HTTP request helper for zero-dependency API testing`
+  33. `0b17d4f` — `test: implement automated end-to-end integration test suite`
+  34. `ce6c2fe` — `chore: bind test script to run automated test suite in package.json`
+  35. `3b823bf` — `docs: add testing and seeder commands to README documentation`
+  36. `[pending]` — `docs: record Batch 3 milestones in DEVELOPMENT_LOG`
+
+- **Completed Functionality in Batch 3:**
+  - Separated complex query building into `utils/queryFilter.js` with regex sanitation preventing ReDoS attacks.
+  - Implemented pagination and sorting utility `utils/pagination.js` ensuring safe limits and graceful defaults.
+  - Built pre-emptive ObjectId validator middleware `middleware/validateObjectId.js` attached to `/:id` and `/:id/stock` endpoints.
+  - Created realistic 12-item sample catalog `data/sampleProducts.js` spanning Electronics, Furniture, Audio, and Accessories.
+  - Created standalone database seeder script `seeder.js` supporting import and teardown flags.
+  - Added `data:import`, `data:destroy`, and `test` scripts in `package.json`.
+  - Built pure Node.js HTTP test client `tests/testHelper.js` eliminating heavyweight external testing dependencies.
+  - Built complete end-to-end integration test runner `tests/api.test.js` covering all 15 positive, negative, and edge validation tests.
+  - Verified 100% test pass rate with `npm test`.
+  - Updated `README.md` with operational guidance for tests and database seeding.
 
 - **Cumulative Commits:**
-  - Total project commits created so far: 22 commits.
+  - Total project commits created so far: 35 commits.
 
 - **Next Recommended Steps:**
-  - Proceed with Batch 3 (e.g. 10 or 15 commits) based on user instructions to add automated integration test scripts, refined query edge-case handling, and enhanced logging/validation helpers.
+  - Proceed with Batch 4 upon user instruction toward reaching the 55–60 target commit goal (e.g. enhanced error handling responses, request logging middleware, detailed query response pagination headers, and API edge-case hardening).
