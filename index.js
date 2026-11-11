@@ -2,6 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const productRoutes = require('./routes/productRoutes');
+const requestLogger = require('./middleware/requestLogger');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
 
 // Load environment variables
@@ -14,6 +15,9 @@ const app = express();
 
 // Body Parser Middleware for JSON payloads
 app.use(express.json());
+
+// Request logging middleware
+app.use(requestLogger);
 
 // Base API health route
 app.get('/api/health', (req, res) => {
