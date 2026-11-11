@@ -256,7 +256,16 @@ const adjustStock = async (req, res, next) => {
 // @route   GET /api/products/low-stock
 const getLowStockReport = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: 'getLowStockReport endpoint initialized' });
+    // Find products where quantity <= reorderLevel using $expr
+    const lowStockItems = await Product.find({
+      $expr: { $lte: ['$quantity', '$reorderLevel'] },
+    }).sort({ quantity: 1 });
+
+    res.status(200).json({
+      success: true,
+      count: lowStockItems.length,
+      lowStockItems,
+    });
   } catch (error) {
     next(error);
   }
