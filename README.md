@@ -1,7 +1,7 @@
 # Inventory and Data Management System
 ## Assignment 3 — Web Dev III | Unit 3 | CO3
 
-A robust backend REST API built with Node.js, Express.js, and MongoDB / Mongoose for managing store and warehouse inventory.
+A complete backend REST API built with Node.js, Express.js, and MongoDB / Mongoose for managing store and warehouse inventory.
 
 ---
 
@@ -14,7 +14,7 @@ A robust backend REST API built with Node.js, Express.js, and MongoDB / Mongoose
 
 ---
 
-## Project Structure
+## Project Architecture
 ```text
 Assign3_webdevIII/
 │
@@ -25,7 +25,7 @@ Assign3_webdevIII/
 │   └── Product.js                         # Mongoose schema, validation & virtual stockValue
 │
 ├── controllers/
-│   └── productController.js               # API controllers for business logic
+│   └── productController.js               # API controllers for 8 business operations
 │
 ├── routes/
 │   └── productRoutes.js                   # Express route definitions
@@ -35,15 +35,31 @@ Assign3_webdevIII/
 │   └── validateProduct.js                 # Request payload validation middleware
 │
 ├── postman/
-│   └── inventory-api.postman_collection.json # API test suite
+│   └── inventory-api.postman_collection.json # Complete Postman API test collection
 │
 ├── .env.example                           # Sample environment configuration
 ├── .gitignore                             # Git ignore rules
 ├── index.js                               # Server entry point
 ├── package.json                           # Dependencies and scripts
 ├── DEVELOPMENT_LOG.md                     # Incremental development tracking log
-└── README.md                              # Project documentation
+└── README.md                              # Comprehensive project documentation
 ```
+
+---
+
+## Product Database Schema
+
+| Field | Type | Validation / Behavior |
+|---|---|---|
+| `name` | String | Required, trimmed |
+| `sku` | String | Required, unique index, uppercase, trimmed |
+| `category` | String | Required, trimmed |
+| `price` | Number | Required, strictly positive (> 0) |
+| `quantity` | Number | Required, non-negative (>= 0) |
+| `reorderLevel` | Number | Required, non-negative (>= 0) |
+| `supplier` | String | Required, trimmed |
+| `stockValue` | Number | Computed virtual field (`price * quantity`), direct client assignment rejected |
+| `createdAt` / `updatedAt` | Date | Automatically managed timestamps |
 
 ---
 
@@ -66,7 +82,7 @@ Copy `.env.example` to `.env`:
 cp .env.example .env
 ```
 
-Configure your environment variables:
+Configure environment variables:
 ```env
 PORT=5000
 MONGODB_URI=mongodb://127.0.0.1:27017/inventory_db
@@ -75,27 +91,112 @@ NODE_ENV=development
 
 ### Running the Application
 ```bash
-# Start server in production mode
+# Production mode
 npm start
 
-# Start server in development mode (with nodemon)
+# Development mode (auto-reload via nodemon)
 npm run dev
 ```
 
 ---
 
-## API Endpoints
+## API Endpoints (Eight Core Operations)
 
-| Method | Endpoint | Description | Status |
-|---|---|---|---|
-| POST | `/api/products` | Create a new product | Implemented |
-| GET | `/api/products` | Retrieve all products (with filters & pagination) | Scaffolded |
-| GET | `/api/products/:id` | Retrieve single product by ObjectId | Scaffolded |
-| PUT | `/api/products/:id` | Update product details | Scaffolded |
-| DELETE | `/api/products/:id` | Delete product | Scaffolded |
-| PATCH | `/api/products/:id/stock` | Adjust stock quantity | Scaffolded |
-| GET | `/api/products/low-stock` | Low-stock alert report | Scaffolded |
-| GET | `/api/products/summary` | Category-wise inventory aggregation | Scaffolded |
+### 1. Create Product
+- **Method:** `POST`
+- **Endpoint:** `/api/products`
+- **Status Code:** `201 Created`
+- **Request Body:**
+```json
+{
+  "name": "Logitech MX Master 3S",
+  "sku": "LOGI-MX3S-001",
+  "category": "Electronics",
+  "price": 99.99,
+  "quantity": 25,
+  "reorderLevel": 5,
+  "supplier": "Logitech Inc."
+}
+```
+
+### 2. Get All Products (Filtering, Sorting, Pagination)
+- **Method:** `GET`
+- **Endpoint:** `/api/products`
+- **Query Parameters:**
+  - `category`: Filter by exact category (case-insensitive)
+  - `supplier`: Filter by exact supplier (case-insensitive)
+  - `search`: Substring search in product names
+  - `minPrice` & `maxPrice`: Numeric price range boundaries
+  - `sortBy`: `name`, `price`, `quantity`, or `createdAt` (default: `createdAt`)
+  - `order`: `asc` or `desc` (default: `desc`)
+  - `page`: Page number (default: `1`)
+  - `limit`: Items per page (default: `10`)
+- **Example:**
+```bash
+GET /api/products?category=Electronics&page=1&limit=10&sortBy=price&order=asc
+```
+- **Response Format:**
+```json
+{
+  "success": true,
+  "total": 45,
+  "page": 1,
+  "limit": 10,
+  "totalPages": 5,
+  "count": 10,
+  "products": [...]
+}
+```
+
+### 3. Get Single Product
+- **Method:** `GET`
+- **Endpoint:** `/api/products/:id`
+- **Status Code:** `200 OK` (or `404 Not Found`, `400 Bad Request` for invalid ObjectId)
+
+### 4. Update Product
+- **Method:** `PUT`
+- **Endpoint:** `/api/products/:id`
+- **Status Code:** `200 OK`
+- Runs validators, rejects direct client modifications to `stockValue`, and returns the updated document.
+
+### 5. Delete Product
+- **Method:** `DELETE`
+- **Endpoint:** `/api/products/:id`
+- **Status Code:** `200 OK`
+- Returns confirmation message and deleted product details.
+
+### 6. Adjust Stock Quantity
+- **Method:** `PATCH`
+- **Endpoint:** `/api/products/:id/stock`
+- **Request Body:**
+```json
+{
+  "change": 10
+}
+```
+- **Rules:**
+  - Positive integer increases stock.
+  - Negative integer decreases stock.
+  - Zero is rejected with HTTP 400.
+  - Prevents stock from going below 0 with an atomic check.
+
+### 7. Low-Stock Alert Report
+- **Method:** `GET`
+- **Endpoint:** `/api/products/low-stock`
+- Returns all products where `quantity <= reorderLevel`.
+
+### 8. Category-wise Inventory Summary
+- **Method:** `GET`
+- **Endpoint:** `/api/products/summary`
+- MongoDB Aggregation Pipeline computing `totalItems`, `totalQuantity`, `totalStockValue`, and `avgPrice` grouped by category.
+
+---
+
+## Testing with Postman
+Import the collection located at:
+`postman/inventory-api.postman_collection.json`
+
+Set the collection variable `baseUrl` to `http://localhost:5000/api`.
 
 ---
 
