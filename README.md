@@ -96,6 +96,15 @@ npm start
 
 # Development mode (auto-reload via nodemon)
 npm run dev
+
+# Seed database with sample inventory (12 products across 3 categories)
+npm run data:import
+
+# Clear all inventory records
+npm run data:destroy
+
+# Run complete automated end-to-end test suite
+npm test
 ```
 
 ---
