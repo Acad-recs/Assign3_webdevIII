@@ -197,7 +197,56 @@ const deleteProduct = async (req, res, next) => {
 // @route   PATCH /api/products/:id/stock
 const adjustStock = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: 'adjustStock endpoint initialized' });
+    const { change } = req.body;
+
+    if (change === undefined || change === null || typeof change !== 'number' || isNaN(change)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid stock change value. A non-zero numeric change is required.',
+      });
+    }
+
+    if (change === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'Stock change must be non-zero (positive to increment, negative to decrement).',
+      });
+    }
+
+    // Atomically find and update product, ensuring stock does not become negative
+    // Condition: quantity + change >= 0
+    const filter = {
+      _id: req.params.id,
+      ...(change < 0 ? { quantity: { $gte: Math.abs(change) } } : {}),
+    };
+
+    const updatedProduct = await Product.findOneAndUpdate(
+      filter,
+      { $inc: { quantity: change } },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedProduct) {
+      // Check if product exists to distinguish between not-found and insufficient-stock
+      const existingProduct = await Product.findById(req.params.id);
+      if (!existingProduct) {
+        return res.status(404).json({
+          success: false,
+          message: `Product not found with id: ${req.params.id}`,
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message: `Insufficient stock. Current quantity is ${existingProduct.quantity}, cannot decrement by ${Math.abs(change)}.`,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `Stock successfully adjusted by ${change > 0 ? '+' : ''}${change}`,
+      data: updatedProduct,
+    });
   } catch (error) {
     next(error);
   }
