@@ -144,7 +144,7 @@ const updateProduct = async (req, res, next) => {
       req.params.id,
       { $set: updateFields },
       {
-        new: true,
+        returnDocument: 'after',
         runValidators: true,
       }
     );
@@ -223,7 +223,7 @@ const adjustStock = async (req, res, next) => {
     const updatedProduct = await Product.findOneAndUpdate(
       filter,
       { $inc: { quantity: change } },
-      { new: true, runValidators: true }
+      { returnDocument: 'after', runValidators: true }
     );
 
     if (!updatedProduct) {
