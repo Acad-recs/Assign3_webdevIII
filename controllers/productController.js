@@ -99,7 +99,19 @@ const getAllProducts = async (req, res, next) => {
 // @route   GET /api/products/:id
 const getProductById = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: 'getProductById endpoint initialized' });
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: `Product not found with id: ${req.params.id}`,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: product,
+    });
   } catch (error) {
     next(error);
   }
