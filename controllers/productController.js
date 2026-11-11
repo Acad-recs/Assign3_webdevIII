@@ -275,7 +275,36 @@ const getLowStockReport = async (req, res, next) => {
 // @route   GET /api/products/summary
 const getCategorySummary = async (req, res, next) => {
   try {
-    res.status(200).json({ success: true, message: 'getCategorySummary endpoint initialized' });
+    const summary = await Product.aggregate([
+      {
+        $group: {
+          _id: '$category',
+          totalItems: { $sum: 1 },
+          totalQuantity: { $sum: '$quantity' },
+          totalStockValue: { $sum: { $multiply: ['$price', '$quantity'] } },
+          avgPrice: { $avg: '$price' },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          category: '$_id',
+          totalItems: 1,
+          totalQuantity: 1,
+          totalStockValue: { $round: ['$totalStockValue', 2] },
+          avgPrice: { $round: ['$avgPrice', 2] },
+        },
+      },
+      {
+        $sort: { category: 1 },
+      },
+    ]);
+
+    res.status(200).json({
+      success: true,
+      count: summary.length,
+      categories: summary,
+    });
   } catch (error) {
     next(error);
   }
