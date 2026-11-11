@@ -12,6 +12,7 @@ const {
 } = require('../controllers/productController');
 const { validateProductInput } = require('../middleware/validateProduct');
 const { validateObjectId } = require('../middleware/validateObjectId');
+const { validateStockAdjustment } = require('../middleware/validateStock');
 
 // Fixed paths defined first to prevent collision with parameter routes
 router.get('/low-stock', getLowStockReport);
@@ -29,6 +30,6 @@ router.route('/:id')
   .delete(validateObjectId('id'), deleteProduct);
 
 // Subresource stock adjustment
-router.patch('/:id/stock', validateObjectId('id'), adjustStock);
+router.patch('/:id/stock', validateObjectId('id'), validateStockAdjustment, adjustStock);
 
 module.exports = router;
