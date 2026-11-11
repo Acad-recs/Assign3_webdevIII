@@ -20,30 +20,41 @@
   9. `e389e8b` — `feat: define product routes ensuring fixed routes precede param routes`
   10. `bdf2cdb` — `feat: setup Express application server with database connection and routing`
   11. `69982e5` — `docs: update README with project overview architecture and setup instructions`
-  12. `[pending]` — `docs: initialize DEVELOPMENT_LOG for Batch 1 tracking`
+  12. `9d220ce` — `docs: initialize DEVELOPMENT_LOG for Batch 1 tracking`
 
-- **Completed Functionality in Batch 1:**
-  - Project configuration with `.gitignore`, `package.json`, `package-lock.json`.
-  - Environment variable structure with `.env.example` and local `.env`.
-  - MongoDB database connection handler in `config/db.js`.
-  - Mongoose `Product` model with schema validations (name, unique sku, category, positive price, non-negative quantity, non-negative reorderLevel, supplier, timestamps) and virtual `stockValue` (`price * quantity`).
-  - Product input validation middleware preventing direct client assignment of `stockValue` and validating required fields / numeric ranges.
-  - Centralized error handling middleware handling `CastError` (invalid ObjectId), `ValidationError` (schema violations), and `E11000` (duplicate SKU).
-  - Controller scaffolding with full implementation of `createProduct` (`POST /api/products`).
-  - Route registration in `routes/productRoutes.js` with proper priority ordering (`/low-stock` and `/summary` registered ahead of `/:id`).
-  - Express server entry point in `index.js` with JSON body parsing, health check endpoint (`/api/health`), and graceful routing.
-  - Verified live database connection and product creation against local MongoDB instance.
+---
 
-- **Remaining Assignment Requirements:**
-  - Complete implementation of `getAllProducts` (category filter, supplier filter, search, price ranges, sorting, pagination).
-  - Complete implementation of `getProductById` (`GET /api/products/:id`).
-  - Complete implementation of `updateProduct` (`PUT /api/products/:id`).
-  - Complete implementation of `deleteProduct` (`DELETE /api/products/:id`).
-  - Complete implementation of `adjustStock` (`PATCH /api/products/:id/stock` with negative stock guard).
-  - Complete implementation of `getLowStockReport` (`GET /api/products/low-stock`).
-  - Complete implementation of `getCategorySummary` (`GET /api/products/summary` aggregation pipeline).
-  - Postman collection `postman/inventory-api.postman_collection.json` covering all test cases.
-  - Full API documentation and automated verification scripts.
+### Batch 2: Implementation of All Eight Core API Operations, Postman Suite & Docs
+
+- **Batch Target:** 10 meaningful commits.
+- **Commits Created in Batch 2:** 10 commits.
+- **Commit History for Batch 2:**
+  13. `6a8105c` — `feat: implement getAllProducts with filtering sorting and pagination`
+  14. `e1fc6cb` — `feat: implement getProductById with 404 and CastError handling`
+  15. `1655db2` — `feat: implement updateProduct with validations and safe field updates`
+  16. `c918089` — `feat: implement deleteProduct with confirmation payload`
+  17. `767eb6e` — `feat: implement atomic stock adjustment with negative stock validation`
+  18. `a29342a` — `feat: implement low-stock alert report using field comparison query`
+  19. `300edad` — `feat: implement category-wise inventory summary aggregation pipeline`
+  20. `c1d134b` — `fix: update mongoose returnDocument option to resolve deprecation warnings`
+  21. `ec2a3c6` — `feat: add Postman collection covering all 8 operations and edge cases`
+  22. `98295e5` — `docs: expand README with comprehensive documentation for all 8 API operations`
+  23. `[pending]` — `docs: update DEVELOPMENT_LOG for Batch 2 tracking`
+
+- **Completed Functionality in Batch 2:**
+  - Implemented `getAllProducts` with category filtering, supplier filtering, name search, min/max price range filtering, multi-field sorting, and pagination metadata.
+  - Implemented `getProductById` with proper 404 resource check and CastError propagation.
+  - Implemented `updateProduct` with schema re-validation, guard against client-specified `stockValue`, and updated document return.
+  - Implemented `deleteProduct` returning confirmation payload with deleted product information.
+  - Implemented atomic `adjustStock` with negative stock guard ensuring quantity does not fall below 0.
+  - Implemented `getLowStockReport` querying `quantity <= reorderLevel` using MongoDB `$expr`.
+  - Implemented `getCategorySummary` with MongoDB aggregation pipeline computing `totalItems`, `totalQuantity`, `totalStockValue`, and `avgPrice`.
+  - Resolved Mongoose deprecation warnings by updating update queries to `returnDocument: 'after'`.
+  - Created complete Postman collection `postman/inventory-api.postman_collection.json` covering 20 test requests.
+  - Updated comprehensive `README.md` with full endpoint specifications and request/response contracts.
+
+- **Cumulative Commits:**
+  - Total project commits created so far: 22 commits.
 
 - **Next Recommended Steps:**
-  - Proceed with Batch 2 upon user prompt to implement product querying, filtering, search, sorting, and pagination.
+  - Proceed with Batch 3 (e.g. 10 or 15 commits) based on user instructions to add automated integration test scripts, refined query edge-case handling, and enhanced logging/validation helpers.
